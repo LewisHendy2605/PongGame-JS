@@ -67,3 +67,19 @@ body {
   text-align: right;
   border-right: 0.5vh solid var(--foreground-color);
 }
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+  .paddle {
+    height: 7vh; /* Adjust paddle height for smaller screens */
+  }
+
+  .ball {
+    width: 2vh; /* Adjust ball size for smaller screens */
+    height: 2vh;
+  }
+
+  .score {
+    font-size: 5vh; /* Adjust score font size for smaller screens */
+  }
+}
