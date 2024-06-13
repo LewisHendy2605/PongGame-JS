@@ -82,15 +82,23 @@ export default class Ball {
     this.x += this.direction.x * this.velocity * delta;
     this.y += this.direction.y * this.velocity * delta;
     this.velocity += VELOCITY_INCREASE * delta;
-    const rect = this.rect();
+    const ballRect = this.rect();
 
-    if (rect.bottom >= WINDOW_HEIGHT || rect.top <= 0) {
+    if (ballRect.bottom >= WINDOW_HEIGHT || ballRect.top <= 0) {
       this.direction.y *= -1;
     }
 
-    if (paddleRects.some((r) => isCollision(r, rect))) {
-      this.direction.x *= -1;
-    }
+    paddleRects.forEach((paddleRect) => {
+      if (isCollision(paddleRect, ballRect)) {
+        this.direction.x *= -1;
+
+        if (collisionNeedsYFlip(paddleRect, ballRect)) {
+          this.direction.y *= -1;
+        }
+
+        //this.direction.y *= -1;
+      }
+    });
   }
 }
 
@@ -98,11 +106,29 @@ function randomNumberBetween(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-function isCollision(rect1, rect2) {
+function isCollision(paddleRect, ballRect) {
   return (
-    rect1.left <= rect2.right &&
-    rect1.right >= rect2.left &&
-    rect1.top <= rect2.bottom &&
-    rect1.bottom >= rect2.top
+    paddleRect.left <= ballRect.right &&
+    paddleRect.right >= ballRect.left &&
+    paddleRect.top <= ballRect.bottom &&
+    paddleRect.bottom >= ballRect.top
+  );
+}
+
+function collisionNeedsYFlip(paddleRect, ballRect) {
+  return (
+    isCollisionWithTop(paddleRect, ballRect) ||
+    isCollisionWithBottom(paddleRect, ballRect)
+  );
+}
+
+function isCollisionWithTop(paddleRect, ballRect) {
+  // Check if the top edge of the ball is below or at the top edge of the paddle
+  return ballRect.bottom >= paddleRect.top && ballRect.top <= paddleRect.top;
+}
+function isCollisionWithBottom(paddleRect, ballRect) {
+  // Check if the top edge of the ball is above or at the bottom edge of the paddle
+  return (
+    ballRect.top <= paddleRect.bottom && ballRect.bottom >= paddleRect.bottom
   );
 }

@@ -58,10 +58,10 @@ function isLose() {
 }
 */
 function handleLose() {
-  const rect = ball.rect();
-  if (rect.right >= WINDOW_WIDTH) {
+  const center = ball.center; // Get the center of the ball
+  if (center.x >= WINDOW_WIDTH) {
     playerScoreElem.textContent = parseInt(playerScoreElem.textContent) + 1;
-  } else {
+  } else if (center.x <= 0) {
     computerScoreElem.textContent = parseInt(computerScoreElem.textContent) + 1;
   }
   ball.reset();
