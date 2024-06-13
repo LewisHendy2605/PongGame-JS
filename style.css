@@ -42,14 +42,16 @@ body {
   background-color: var(--foreground-color);
   top: calc(var(--position) * 1%);
   transform: translateY(-50%);
-  width: 1%;
-  height: 30%;
+  width: 2%;
+  height: 25%;
 }
 
 .paddle.left {
+  margin-left: 1%;
   left: 0;
 }
 .paddle.right {
+  margin-right: 2%;
   right: 0;
 }
 .ball {

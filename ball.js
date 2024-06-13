@@ -1,5 +1,16 @@
-const INITIAL_VELOCITY = 0.025;
-const VELOCITY_INCREASE = 0.00001;
+const SLOW_MODE = false;
+
+let INITIAL_VELOCITY = null;
+let VELOCITY_INCREASE = null;
+
+if (SLOW_MODE) {
+  INITIAL_VELOCITY = 0.0025;
+  VELOCITY_INCREASE = 0.000001;
+} else {
+  INITIAL_VELOCITY = 0.025;
+  VELOCITY_INCREASE = 0.00001;
+}
+
 let gameRect = document.getElementById("gameDiv").getBoundingClientRect();
 
 const WINDOW_HEIGHT = gameRect.height;
@@ -27,16 +38,26 @@ export default class Ball {
     this.ballElem.style.setProperty("--y", value);
   }
 
+  get center() {
+    const rect = this.rect();
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    };
+  }
+
   rect() {
-    const rect = this.ballElem.getBoundingClientRect();
+    const ballRect = this.ballElem.getBoundingClientRect();
     const gameRect = document.getElementById("gameDiv").getBoundingClientRect();
 
     // Adjust rect coordinates relative to gameDiv
     return {
-      top: rect.top - gameRect.top,
-      right: rect.right - gameRect.left,
-      bottom: rect.bottom - gameRect.top,
-      left: rect.left - gameRect.left,
+      top: ballRect.top - gameRect.top,
+      right: ballRect.right - gameRect.left,
+      bottom: ballRect.bottom - gameRect.top,
+      left: ballRect.left - gameRect.left,
+      width: ballRect.width,
+      height: ballRect.height,
     };
   }
 

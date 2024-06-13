@@ -20,27 +20,17 @@ const computerPaddle = new Paddle(
 const playerScoreElem = document.getElementById("player-score");
 const computerScoreElem = document.getElementById("computer-score");
 
-//const WINDOW_HEIGHT = gameRect.height;
-//const WINDOW_WIDTH = gameRect.width;
-
 let bodyRect = document.body.getBoundingClientRect();
 
 const BODY_HEIGHT = bodyRect.height;
 const BODY_WIDTH = bodyRect.width;
-
-console.log("Window Height: " + window.innerHeight);
-console.log("Window Width: " + window.innerWidth);
-console.log("Body Height: " + BODY_HEIGHT);
-console.log("Body Width: " + BODY_WIDTH);
-console.log("Div Height: " + WINDOW_HEIGHT);
-console.log("Div Width: " + WINDOW_WIDTH);
 
 let lastTime;
 function update(time) {
   if (lastTime != null) {
     const delta = time - lastTime;
     ball.update(delta, [playerPaddle.rect(), computerPaddle.rect()]);
-    computerPaddle.update(delta, ball.y);
+    computerPaddle.updateComputerPaddle(delta, ball.y);
     const hue = parseFloat(
       getComputedStyle(document.documentElement).getPropertyValue("--hue")
     );
@@ -54,10 +44,19 @@ function update(time) {
   window.requestAnimationFrame(update);
 }
 
+// ball centre lose cobdition
+function isLose() {
+  const center = ball.center;
+  return center.x >= WINDOW_WIDTH || center.x <= 0;
+}
+
+// ball edges lose condition
+/*
 function isLose() {
   const rect = ball.rect();
   return rect.right >= WINDOW_WIDTH || rect.left <= 0;
 }
+*/
 function handleLose() {
   const rect = ball.rect();
   if (rect.right >= WINDOW_WIDTH) {
@@ -69,6 +68,7 @@ function handleLose() {
   computerPaddle.reset();
 }
 
+// Listerners
 document.addEventListener("mousemove", (e) => {
   playerPaddle.move(e);
 });

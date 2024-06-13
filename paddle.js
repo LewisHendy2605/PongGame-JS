@@ -36,6 +36,8 @@ export default class Paddle {
       right: rect.right - gameRect.left,
       bottom: rect.bottom - gameRect.top,
       left: rect.left - gameRect.left,
+      width: rect.width,
+      height: rect.height,
     };
   }
 
@@ -43,8 +45,27 @@ export default class Paddle {
     this.position = 50;
   }
 
-  update(delta, ballHeight) {
-    this.position += SPEED * delta * (ballHeight - this.position);
+  updateComputerPaddle(delta, ballHeight) {
+    // ----
+    const newPos = this.position + SPEED * delta * (ballHeight - this.position);
+    /// ----
+    const gameDivRect = this.gameDiv.getBoundingClientRect();
+    const paddleRect = this.paddleElem.getBoundingClientRect();
+
+    const paddleHeightPercentage =
+      (paddleRect.height / gameDivRect.height) * 100;
+
+    const paddleTop = newPos - paddleHeightPercentage / 2;
+    const paddleBottom = newPos + paddleHeightPercentage / 2;
+
+    // Ensure the paddle stays within the gameDiv boundaries
+    if (paddleTop >= 0 && paddleBottom <= 100) {
+      this.position = newPos;
+    } else if (paddleTop < 0) {
+      this.position = paddleHeightPercentage / 2;
+    } else if (paddleBottom > 100) {
+      this.position = 100 - paddleHeightPercentage / 2;
+    }
   }
 
   move(e) {
