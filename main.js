@@ -1,5 +1,6 @@
 import Ball from "./ball.js";
 import Paddle from "./paddle.js";
+import PongModeControls from "./PongModeControls.js";
 
 let gameRect = document.getElementById("gameDiv").getBoundingClientRect();
 let gameDiv = document.getElementById("gameDiv");
@@ -17,6 +18,9 @@ const computerPaddle = new Paddle(
   document.getElementById("gameDiv"),
   WINDOW_HEIGHT
 );
+const mode_controls = new PongModeControls();
+mode_controls.startControls();
+
 const playerScoreElem = document.getElementById("player-score");
 const computerScoreElem = document.getElementById("computer-score");
 
@@ -31,11 +35,7 @@ function update(time) {
     const delta = time - lastTime;
     ball.update(delta, [playerPaddle.rect(), computerPaddle.rect()]);
     computerPaddle.updateComputerPaddle(delta, ball.y);
-    const hue = parseFloat(
-      getComputedStyle(document.documentElement).getPropertyValue("--hue")
-    );
-
-    document.documentElement.style.setProperty("--hue", hue + delta * 0.01);
+    updateBackgroundColor(delta);
 
     if (isLose()) handleLose();
   }
@@ -66,6 +66,14 @@ function handleLose() {
   }
   ball.reset();
   computerPaddle.reset();
+}
+
+function updateBackgroundColor(delta) {
+  const hue = parseFloat(
+    getComputedStyle(document.documentElement).getPropertyValue("--hue")
+  );
+
+  document.documentElement.style.setProperty("--hue", hue + delta * 0.01);
 }
 
 // Listerners

@@ -1,3 +1,5 @@
+import { eventEmitter } from "./EventEmitter.js"; // called when ball hits paddle
+
 const SLOW_MODE = false;
 
 let INITIAL_VELOCITY = null;
@@ -96,7 +98,7 @@ export default class Ball {
           this.direction.y *= -1;
         }
 
-        //this.direction.y *= -1;
+        eventEmitter.emit("ballCollision", { ballRect, paddleRect });
       }
     });
   }

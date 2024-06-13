@@ -7,7 +7,7 @@
   --hue: 200;
   --saturation: 50%;
   --foreground-color: hsl(var(--hue), var(--saturation), 75%);
-  --background-color: hsl(var(--hue), var(--saturation), 20%);
+  --background-color: hsl(var(--hue), var(--saturation), 70%);
 }
 
 body {
@@ -100,4 +100,27 @@ body {
 .score > :first-child {
   text-align: right;
   border-right: 0.5vh solid var(--foreground-color);
+}
+.game-mode-controls {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  flex-direction: row;
+}
+
+.game-mode-button {
+  margin: 5%;
+  padding: 3%;
+  border: 6px solid purple;
+  border-radius: 8px;
+  display: block;
+  text-align: center;
+  background-color: cornflowerblue;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.game-mode-button:hover {
+  background-color: lightgray;
 }
