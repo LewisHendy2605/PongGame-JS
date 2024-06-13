@@ -1,5 +1,9 @@
 const INITIAL_VELOCITY = 0.025;
 const VELOCITY_INCREASE = 0.00001;
+let gameRect = document.getElementById("gameDiv").getBoundingClientRect();
+
+const WINDOW_HEIGHT = gameRect.height;
+const WINDOW_WIDTH = gameRect.width;
 
 export default class Ball {
   constructor(ballElem) {
@@ -24,13 +28,23 @@ export default class Ball {
   }
 
   rect() {
-    return this.ballElem.getBoundingClientRect();
+    const rect = this.ballElem.getBoundingClientRect();
+    const gameRect = document.getElementById("gameDiv").getBoundingClientRect();
+
+    // Adjust rect coordinates relative to gameDiv
+    return {
+      top: rect.top - gameRect.top,
+      right: rect.right - gameRect.left,
+      bottom: rect.bottom - gameRect.top,
+      left: rect.left - gameRect.left,
+    };
   }
 
   reset() {
     this.x = 50;
     this.y = 50;
     this.direction = { x: 0 };
+
     while (
       Math.abs(this.direction.x <= 0.2) ||
       Math.abs(this.direction.x >= 0.9)
@@ -49,7 +63,7 @@ export default class Ball {
     this.velocity += VELOCITY_INCREASE * delta;
     const rect = this.rect();
 
-    if (rect.bottom >= window.innerHeight || rect.top <= 0) {
+    if (rect.bottom >= WINDOW_HEIGHT || rect.top <= 0) {
       this.direction.y *= -1;
     }
 

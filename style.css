@@ -11,9 +11,28 @@
 }
 
 body {
+  --width: 100;
+  --height: 100;
+
+  height: calc(var(--height) * 1vh);
+  width: calc(var(--width) * 1vw);
   margin: 0;
   background-color: var(--background-color);
   overflow: hidden;
+
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.game-div {
+  --div_width: 90;
+  --div_height: 70;
+
+  height: calc(var(--div_height) * 1%);
+  width: calc(var(--div_width) * 1%);
+  background-color: white;
+  position: relative;
 }
 
 .paddle {
@@ -21,17 +40,17 @@ body {
 
   position: absolute;
   background-color: var(--foreground-color);
-  top: calc(var(--position) * 1vh);
+  top: calc(var(--position) * 1%);
   transform: translateY(-50%);
-  width: 1vh;
-  height: 10vh;
+  width: 1%;
+  height: 30%;
 }
 
 .paddle.left {
-  left: 1vh;
+  left: 0;
 }
 .paddle.right {
-  right: 1vh;
+  right: 0;
 }
 .ball {
   --x: 50;
@@ -39,12 +58,12 @@ body {
 
   position: absolute;
   background-color: var(--foreground-color);
-  left: calc(var(--x) * 1vh);
-  top: calc(var(--y) * 1vh);
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  width: 2.5vh;
-  height: 2.5vh;
+  width: 2.5vw;
+  height: 2.5vw;
 }
 
 .score {
@@ -66,20 +85,4 @@ body {
 .score > :first-child {
   text-align: right;
   border-right: 0.5vh solid var(--foreground-color);
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 600px) {
-  .paddle {
-    height: 7vh; /* Adjust paddle height for smaller screens */
-  }
-
-  .ball {
-    width: 2vh; /* Adjust ball size for smaller screens */
-    height: 2vh;
-  }
-
-  .score {
-    font-size: 5vh; /* Adjust score font size for smaller screens */
-  }
 }

@@ -1,11 +1,39 @@
 import Ball from "./ball.js";
 import Paddle from "./paddle.js";
 
+let gameRect = document.getElementById("gameDiv").getBoundingClientRect();
+let gameDiv = document.getElementById("gameDiv");
+const WINDOW_HEIGHT = gameDiv.clientHeight;
+const WINDOW_WIDTH = gameDiv.clientWidth;
+
 const ball = new Ball(document.getElementById("ball"));
-const playerPaddle = new Paddle(document.getElementById("player-paddle"));
-const computerPaddle = new Paddle(document.getElementById("computer-paddle"));
+const playerPaddle = new Paddle(
+  document.getElementById("player-paddle"),
+  document.getElementById("gameDiv"),
+  WINDOW_HEIGHT
+);
+const computerPaddle = new Paddle(
+  document.getElementById("computer-paddle"),
+  document.getElementById("gameDiv"),
+  WINDOW_HEIGHT
+);
 const playerScoreElem = document.getElementById("player-score");
 const computerScoreElem = document.getElementById("computer-score");
+
+//const WINDOW_HEIGHT = gameRect.height;
+//const WINDOW_WIDTH = gameRect.width;
+
+let bodyRect = document.body.getBoundingClientRect();
+
+const BODY_HEIGHT = bodyRect.height;
+const BODY_WIDTH = bodyRect.width;
+
+console.log("Window Height: " + window.innerHeight);
+console.log("Window Width: " + window.innerWidth);
+console.log("Body Height: " + BODY_HEIGHT);
+console.log("Body Width: " + BODY_WIDTH);
+console.log("Div Height: " + WINDOW_HEIGHT);
+console.log("Div Width: " + WINDOW_WIDTH);
 
 let lastTime;
 function update(time) {
@@ -28,11 +56,11 @@ function update(time) {
 
 function isLose() {
   const rect = ball.rect();
-  return rect.right >= window.innerWidth || rect.left <= 0;
+  return rect.right >= WINDOW_WIDTH || rect.left <= 0;
 }
 function handleLose() {
   const rect = ball.rect();
-  if (rect.right >= window.innerWidth) {
+  if (rect.right >= WINDOW_WIDTH) {
     playerScoreElem.textContent = parseInt(playerScoreElem.textContent) + 1;
   } else {
     computerScoreElem.textContent = parseInt(computerScoreElem.textContent) + 1;
@@ -42,13 +70,14 @@ function handleLose() {
 }
 
 document.addEventListener("mousemove", (e) => {
-  // convert pixel value to percentage
-  playerPaddle.position = (e.y / window.innerHeight) * 100;
+  playerPaddle.move(e);
 });
 
 document.addEventListener("touchmove", (e) => {
   const touch = e.touches[0];
-  playerPaddle.position = (touch.clientY / window.innerHeight) * 100;
+  const rect = gameDiv.getBoundingClientRect();
+  const touchY = touch.clientY - rect.top; // Touch Y position relative to gameDiv top
+  playerPaddle.position = (touchY / WINDOW_HEIGHT) * 100;
 });
 
 window.requestAnimationFrame(update);
