@@ -25,6 +25,19 @@ body {
   align-items: center; /* Center vertically */
 }
 
+.game-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  flex-direction: column;
+}
+.game-name {
+  font-size: 250%;
+  color: white;
+}
+
 .game-div {
   --div_width: 90;
   --div_height: 70;
