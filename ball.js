@@ -2,6 +2,8 @@ import { eventEmitter } from "./EventEmitter.js"; // called when ball hits paddl
 
 const SLOW_MODE = false;
 
+const THROTTLE_TIME = 100; // Time in milliseconds
+
 let INITIAL_VELOCITY = null;
 let VELOCITY_INCREASE = null;
 
@@ -21,6 +23,8 @@ const WINDOW_WIDTH = gameRect.width;
 export default class Ball {
   constructor(ballElem) {
     this.ballElem = ballElem;
+    this.lastWallCollisionTime = 0;
+    this.lastPaddleCollisionTime = 0;
     this.reset();
   }
 
@@ -86,21 +90,45 @@ export default class Ball {
     this.velocity += VELOCITY_INCREASE * delta;
     const ballRect = this.rect();
 
-    if (ballRect.bottom >= WINDOW_HEIGHT || ballRect.top <= 0) {
-      this.direction.y *= -1;
+    const currentTime = Date.now();
+
+    // Wall collision check with cooldown
+    if (currentTime - this.lastWallCollisionTime >= THROTTLE_TIME) {
+      if (ballRect.bottom >= WINDOW_HEIGHT || ballRect.top <= 0) {
+        this.direction.y *= -1;
+        this.lastWallCollisionTime = currentTime;
+      }
     }
 
-    paddleRects.forEach((paddleRect) => {
-      if (isCollision(paddleRect, ballRect)) {
-        this.direction.x *= -1;
+    console.log("Starting loop through rects + delta: " + delta);
 
-        if (collisionNeedsYFlip(paddleRect, ballRect)) {
-          this.direction.y *= -1;
+    // Paddle collision check with cooldown
+    if (currentTime - this.lastPaddleCollisionTime >= THROTTLE_TIME) {
+      paddleRects.forEach((paddleRect) => {
+        if (isCollision(paddleRect, ballRect)) {
+          console.log(
+            "Direction Before Changed: " +
+              this.direction.x +
+              " " +
+              this.direction.y
+          );
+          this.direction.x *= -1;
+
+          if (collisionNeedsYFlip(paddleRect, ballRect)) {
+            this.direction.y *= -1;
+          }
+
+          console.log(
+            "Direction Changed: " + this.direction.x + " " + this.direction.y
+          );
+
+          eventEmitter.emit("ballCollision", { ballRect, paddleRect });
+
+          // Update the last paddle collision time
+          this.lastPaddleCollisionTime = currentTime;
         }
-
-        eventEmitter.emit("ballCollision", { ballRect, paddleRect });
-      }
-    });
+      });
+    }
   }
 }
 
