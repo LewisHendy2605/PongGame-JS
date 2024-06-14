@@ -25,6 +25,17 @@ export default class PongModeControls {
     }
   }
 
+  handleSpeedModeClick() {
+    if (this.isListeningForBallPaddleColis) {
+      this.isListeningForBallPaddleColis = false;
+      eventEmitter.off("ballCollision", setRandomBallSpeed);
+    } else {
+      this.isListeningForBallPaddleColis = true;
+      //Event Lister for paddle/ball collision
+      eventEmitter.on("ballCollision", setRandomBallSpeed);
+    }
+  }
+
   startColorSwitchMode() {
     const colourButton = document.getElementById("ColorModeSwitchBtn");
     colourButton.addEventListener("click", (e) => {
@@ -34,8 +45,9 @@ export default class PongModeControls {
 
   startRandomSpeedMode() {
     const speedButton = document.getElementById("RandomSpeedModeBtn");
-    speedButton.addEventListener("click", (e) => {
+    speedButton.addEventListener("click", () => {
       console.log("Random Speed Btn pressed");
+      this.handleSpeedModeClick();
     });
   }
 }
@@ -65,4 +77,15 @@ const setBodyColourVariableRandom = () => {
   document.documentElement.style.setProperty("--hue", newHue);
 
   //console.log(`Hue changed by ${delta.toFixed(2)} to ${newHue.toFixed(2)}`);
+};
+
+const setRandomBallSpeed = () => {
+  // Generate random initial velocity and velocity increase
+  const newInitialVelocity = Math.random() * (0.3 - 0.001) + 0.01; // range between 0.01 and 0.05
+  const newVelocityIncrease = Math.random() * (0.00005 - 0.00001) + 0.00001; // range between 0.00001 and 0.00005
+
+  eventEmitter.emit("changeSpeed", {
+    initial_velocity: newInitialVelocity,
+    velocity_increase: newVelocityIncrease,
+  });
 };

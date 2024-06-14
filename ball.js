@@ -26,6 +26,9 @@ export default class Ball {
     this.lastWallCollisionTime = 0;
     this.lastPaddleCollisionTime = 0;
     this.reset();
+
+    // Listen for the speed change event
+    eventEmitter.on("changeSpeed", this.setBallSpeed.bind(this));
   }
 
   get x() {
@@ -50,6 +53,18 @@ export default class Ball {
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2,
     };
+  }
+
+  getBallSpeed() {
+    return { INITIAL_VELOCITY, VELOCITY_INCREASE };
+  }
+
+  setBallSpeed({ initial_velocity, velocity_increase }) {
+    VELOCITY_INCREASE = velocity_increase;
+    this.velocity = initial_velocity; // Reset current velocity to new initial velocity
+    console.log(
+      `Ball speed changed to: Initial Velocity = ${initial_velocity}, Velocity Increase = ${VELOCITY_INCREASE}`
+    );
   }
 
   rect() {
@@ -100,27 +115,15 @@ export default class Ball {
       }
     }
 
-    console.log("Starting loop through rects + delta: " + delta);
-
     // Paddle collision check with cooldown
     if (currentTime - this.lastPaddleCollisionTime >= THROTTLE_TIME) {
       paddleRects.forEach((paddleRect) => {
         if (isCollision(paddleRect, ballRect)) {
-          console.log(
-            "Direction Before Changed: " +
-              this.direction.x +
-              " " +
-              this.direction.y
-          );
           this.direction.x *= -1;
 
           if (collisionNeedsYFlip(paddleRect, ballRect)) {
             this.direction.y *= -1;
           }
-
-          console.log(
-            "Direction Changed: " + this.direction.x + " " + this.direction.y
-          );
 
           eventEmitter.emit("ballCollision", { ballRect, paddleRect });
 
